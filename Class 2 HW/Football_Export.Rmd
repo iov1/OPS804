@@ -1,0 +1,79 @@
+---
+title: "Football_Export.Rmd"
+subtitle: "An implementation in R Markdown"
+author: "Ivan Vega - OPS 804"
+date: "`r Sys.Date()`"
+output:
+  tufte::tufte_html: default
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
+bibliography: skeleton.bib
+link-citations: yes
+---
+## Introduction
+The test was data collected on all 32 American Football teams to see if team revenue was related to percieved value of the team. The data came from the 2014 season.
+
+
+1. A section with the descriptive statistics, reporting the descriptive statistics in word and numbers,
+
+
+```{r setup, echo=FALSE, message=FALSE, include=TRUE, cache=TRUE}
+setwd("C:/Users/Analyst/Documents/GitHub/iov1/iov1/Class 2 HW")
+source("Football_ANOVA.R")
+library(tufte)
+```
+
+
+
+```{r fig-margin, fig.margin = TRUE, fig.cap = "Football: Revenue Versus Value", fig.width=3.5, fig.height=3.5, cache=TRUE}
+library(ggplot2)
+football2 <- Football
+ggplot(football2, aes(Value, Revenue)) +
+  geom_point() + geom_smooth() +
+  theme(legend.position = 'bottom')
+```
+
+## ANOVA Analysis
+ including the hypothesis, testing the assumptions and the result of these tests (Normality, Homogeneity of Variance)
+
+Hypothesis is a p value less than .05. The p-value from this data set was less than .05, we decided not to reject the null hypothesis.
+
+For this data set, the shapiro test was not functioning properly - instead we used a quantile-quantile plot. Found only one outlier and concluded that it satisfied this test.
+
+Homogeneity of Variance did not work with this data set due to the fact the levene test not function. This could jeapordize the validity of this data set, but since there is no other data to collect in regards to this(All 32 teams have been accounted for). The p value is very small, thereofre it is unlikely the result is wrong.
+
+```{r fig-fullwidth, fig.width = 10, fig.height = 2, fig.fullwidth = TRUE, fig.cap = "A full width figure.", warning=FALSE, cache=TRUE}
+qqp <- ggplot(Football) +
+stat_qq(aes(sample = Revenue, colour = factor(Value))) +
+guides(col = guide_legend(title = "Cylinder"))
+```
+
+```
+
+```{r}
+knitr::kable(
+  Football[1:30, 1:3], caption = 'Football'
+)
+```
+
+# Block Quotes
+
+
+> "Football is like life, it requires perseverance, self-denial, hard work sacrifice, dedication and respect for authority."
+>
+> `r tufte::quote_footer('--- Vice Lombardi')`
+
+
+# More Examples
+
+
+```{r fig-two-together, fig.cap="Two plots in one figure environment.", fig.show='hold', cache=TRUE}
+p <- ggplot(football2, aes(Value, Revenue)) +
+  geom_point()
+p
+p + geom_smooth()
+```
